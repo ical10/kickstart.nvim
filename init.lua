@@ -488,7 +488,6 @@ require('lazy').setup({
       { 'mason-org/mason.nvim', opts = {} },
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-
       -- Autocomplete by blink
       'saghen/blink.cmp',
       -- Useful status updates for LSP.
@@ -703,6 +702,7 @@ require('lazy').setup({
             },
           },
         },
+        tailwindcss = {},
         -- tsserver = {
         --   settings = {
         --     typescript = {
@@ -750,6 +750,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'typescript-language-server',
+        'tailwindcss-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
