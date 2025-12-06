@@ -39,4 +39,13 @@ return {
   },
 
   -- Add TypeScript specific plugins below (optional)
+
+  -- Configure matchit for HTML/JSX tags
+  {
+    'andymass/vim-matchup',
+    event = 'VimEnter',
+    config = function()
+      vim.g.matchup_matchparen_offscreen = { method = 'popup' }
+    end,
+  },
 }
