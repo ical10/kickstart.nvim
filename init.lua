@@ -751,6 +751,7 @@ require('lazy').setup({
         'stylua', -- Used to format Lua code
         'typescript-language-server',
         'tailwindcss-language-server',
+        'svelte-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1143,6 +1144,3 @@ require('lazy').setup({
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
---
--- Add custom config for various languages
-require 'custom.typescript'
