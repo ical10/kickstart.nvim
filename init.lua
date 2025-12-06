@@ -474,7 +474,6 @@ require('lazy').setup({
       { 'williamboman/mason.nvim', opts = {} },
       'williamboman/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
-
       -- Autocomplete by blink
       'saghen/blink.cmp',
       -- Useful status updates for LSP.
@@ -692,6 +691,7 @@ require('lazy').setup({
             },
           },
         },
+        tailwindcss = {},
         -- tsserver = {
         --   settings = {
         --     typescript = {
@@ -739,6 +739,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
         'typescript-language-server',
+        'tailwindcss-language-server',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -951,7 +952,7 @@ require('lazy').setup({
       -- Better Around/Inside textobjects
       --
       -- Examples:
-      --  - va)  - [€ý.€ý.V]isually select [A]round [)]paren
+      --  - va)  - [ï¿½ï¿½.ï¿½ï¿½.V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
