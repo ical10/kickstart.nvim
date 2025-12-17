@@ -959,10 +959,20 @@ require('lazy').setup({
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
-      -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-      -- - sd'   - [S]urround [D]elete [']quotes
-      -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      -- - ma)   - Add [)]Paren
+      -- - md'   - Delete [']quotes
+      -- - mr)'  - Replace [)] with [']
+      require('mini.surround').setup {
+        mappings = {
+          add = 'ma', -- Add surrounding
+          delete = 'md', -- Delete surrounding
+          find = 'mf', -- Find surrounding (right)
+          find_left = 'mF', -- Find surrounding (left)
+          highlight = 'mh', -- Highlight surrounding
+          replace = 'mr', -- Replace surrounding
+          update_n_lines = 'mn', -- Update number of lines
+        },
+      }
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
