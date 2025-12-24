@@ -1092,19 +1092,16 @@ require('lazy').setup({
   {
     -- Use treesitter to autoclose and autorename HTML tag
     'windwp/nvim-ts-autotag',
-    opts = {},
-    config = function(_, opts)
-      require('nvim-ts-autotag').setup {
-        enable_close = true, -- Auto close tags
-        enable_rename = true, -- Auto rename pairs of tags
-        enable_close_on_slash = false, -- Auto close on trailing </
-        per_filetype = {
-          ['html'] = {
-            enable_close = false,
-          },
+    opts = {
+      enable_close = true, -- Auto close tags
+      enable_rename = true, -- Auto rename pairs of tags
+      enable_close_on_slash = false, -- Auto close on trailing </
+      per_filetype = {
+        ['html'] = {
+          enable_close = false,
         },
-      }
-    end,
+      },
+    },
   },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
