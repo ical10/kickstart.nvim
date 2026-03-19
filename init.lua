@@ -548,16 +548,16 @@ require('lazy').setup({
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
 
           -- Find references for the word under your cursor.
-          map('grr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
-          map('gri', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
+          map('gi', require('telescope.builtin').lsp_implementations, '[G]oto [I]mplementation')
 
           -- Jump to the definition of the word under your cursor.
           --  This is where a variable was first declared, or where a function is defined, etc.
           --  To jump back, press <C-t>.
-          map('grd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
+          map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -754,6 +754,9 @@ require('lazy').setup({
         'typescript-language-server',
         'tailwindcss-language-server',
         'svelte-language-server',
+        'solidity-ls', -- Solidity language server (Nomicfoundation)
+        'jdtls',
+        'google-java-format',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -762,6 +765,9 @@ require('lazy').setup({
         automatic_installation = false,
         handlers = {
           function(server_name)
+            if server_name == 'jdtls' then
+              return -- handled by nvim-jdtls plugin
+            end
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
@@ -771,6 +777,9 @@ require('lazy').setup({
           end,
         },
       }
+
+      -- Disable lspconfig's built-in jdtls — handled by nvim-jdtls
+      vim.lsp.enable('jdtls', false)
     end,
   },
 
@@ -795,8 +804,14 @@ require('lazy').setup({
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = { c = true, cpp = true }
+        local no_lsp_format = { java = true }
         if disable_filetypes[vim.bo[bufnr].filetype] then
           return nil
+        elseif no_lsp_format[vim.bo[bufnr].filetype] then
+          return {
+            timeout_ms = 500,
+            lsp_format = 'never',
+          }
         else
           return {
             timeout_ms = 500,
@@ -811,8 +826,61 @@ require('lazy').setup({
         --
         -- You can use 'stop_after_first' to run the first available formatter from the list
         -- javascript = { "prettierd", "prettier", stop_after_first = true },
+        typescript = { 'prettier' },
+        typescriptreact = { 'prettier' },
+        javascript = { 'prettier' },
+        javascriptreact = { 'prettier' },
+        css = { 'prettier' },
+        html = { 'prettier' },
+        json = { 'prettier' },
+        jsonc = { 'prettier' },
+        yaml = { 'prettier' },
+        markdown = { 'prettier' },
+        solidity = { 'prettier' },
+        java = { 'google-java-format' },
       },
     },
+  },
+
+  { -- Java LSP (nvim-jdtls)
+    'mfussenegger/nvim-jdtls',
+    ft = { 'java' },
+    config = function()
+      local jdtls = require 'jdtls'
+      local jdtls_path = vim.fn.stdpath 'data' .. '/mason/packages/jdtls'
+      local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
+      local workspace_dir = vim.fn.stdpath 'cache' .. '/jdtls-workspace/' .. project_name
+
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'java',
+        callback = function()
+          local capabilities = require('blink.cmp').get_lsp_capabilities()
+          local root_dir = jdtls.setup.find_root { 'build.gradle.kts', 'pom.xml', 'gradlew', '.git' }
+          local lombok_jar = jdtls_path .. '/lombok.jar'
+          jdtls.start_or_attach {
+            cmd = {
+              jdtls_path .. '/bin/jdtls',
+              '-data', workspace_dir,
+              '--jvm-arg=-javaagent:' .. lombok_jar,
+            },
+            root_dir = root_dir,
+            capabilities = capabilities,
+            settings = {
+              java = {
+                saveActions = {
+                  organizeImports = false,
+                },
+                import = {
+                  gradle = {
+                    enabled = true,
+                  },
+                },
+              },
+            },
+          }
+        end,
+      })
+    end,
   },
 
   { -- Autocompletion
